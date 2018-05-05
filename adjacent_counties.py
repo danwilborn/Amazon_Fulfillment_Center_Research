@@ -6,9 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-center_df = pd.read_csv('fulfillment_centers.csv')
-population_df = pd.read_csv('county_population.csv')
-commuting_df = pd.read_csv('commuting_flows.csv')
+center_df = pd.read_csv('../data/csv/fulfillment_centers.csv')
+population_df = pd.read_csv('../data/csv/county_population.csv')
+commuting_df = pd.read_csv('../data/csv/commuting_flows.csv')
 
 
 # Joining center data with commuting data
@@ -25,21 +25,23 @@ only_counties = set()
 
 for i, row in work_counties_df.iterrows():
     if row['Number']/row['POPESTIMATE2010'] > .01:
-        adjacent_counties.add((row['residence_county'],row['residence_state'],row['Year Opened']))
+        FIPS = format(row['residence_state_FIPS'], '02d')+format(row['residence_county_FIPS'], '03d')
+        adjacent_counties.add((row['residence_county'],row['residence_state'],FIPS,row['Year Opened']))
         only_counties.add((row['residence_county'],row['residence_state']))
 
 for i, row in residence_counties_df.iterrows():
     if row['Number']/row['POPESTIMATE2010'] > .01:
-        adjacent_counties.add((row['work_county'],row['work_state'],row['Year Opened']))
+        FIPS = format(row['work_state_FIPS'], '02d')+format(row['work_county_FIPS'], '03d')
+        adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
         only_counties.add((row['work_county'],row['work_state']))
 
 print(len(adjacent_counties))
 print(len(only_counties))
 #print(adjacent_counties)
 
-with open('adjacent_counties.csv','w') as out_file:
+with open('../data/csv/adjacent_counties.csv','w') as out_file:
     csv_out = csv.writer(out_file)
-    csv_out.writerow(['County','State','Year Opened'])
+    csv_out.writerow(['County','State','FIPS','Year Opened'])
     for row in adjacent_counties:
         csv_out.writerow(row)
 
