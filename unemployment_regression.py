@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 df = pd.read_csv('../data/csv/year_and_county_data.csv')
 X = df[['Near_Dummy', 'Time_Dummy', 'Time*Near']]
-y = df['Annual_Wage']
+y = df['Unemployment_Rate']
 
 X = sm.add_constant(X)
 est = sm.OLS(y,X).fit()

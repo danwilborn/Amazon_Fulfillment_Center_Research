@@ -11,5 +11,7 @@ for year in range(1994, 2017):
         csv_out.writerow(['FIPS', 'County/State', 'Year', 'Labor_Force', 'Employed', 'Unemployed', 'Unemployment_Rate'])
         for i, row in df.iterrows():
             FIPS = format(row['State FIPS'], '02d')+format(row['County FIPS'], '03d')
+            if str(row['Unemployment_Rate']) == 'N.A.':
+                break
             output = [FIPS, row['County/State'], row['Year'], row['Labor Force'], row['Employed'], row['Unemployed'], row['Unemployment_Rate']]
             csv_out.writerow(output)
