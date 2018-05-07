@@ -13,7 +13,7 @@ non_adjacent_counties= set()
 only_counties = set()
 
 for i, row in work_counties_df.iterrows():
-    if row['Number']/row['POPESTIMATE2010'] > .01:
+    if row['number']/row['popestimate2010'] > .01:
         FIPS = format(row['residence_state_FIPS'], '02d')+format(row['residence_county_FIPS'], '03d')
         adjacent_counties.add((row['residence_county'],row['residence_state'],str(FIPS),row['Year Opened']))
         only_counties.add((row['residence_county'],row['residence_state']))
