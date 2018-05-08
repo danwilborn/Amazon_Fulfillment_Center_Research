@@ -14,3 +14,11 @@ X = sm.add_constant(X)
 est = sm.OLS(y,X).fit()
 
 print est.summary()
+
+
+y = df['Log(Unemployment)']
+
+X = sm.add_constant(X)
+est = sm.OLS(y,X).fit()
+
+print est.summary()
