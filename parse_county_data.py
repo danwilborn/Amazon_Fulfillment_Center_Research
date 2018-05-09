@@ -45,7 +45,6 @@ with open('../data/csv/year_and_county_data.csv','w') as out_file:
             Wage = row['avg_annual_pay']
             Real_Wage = float((Wage*100)/CPI)
             if Real_Wage == 0:
-                print('Break')
                 break
             Unemployment_Rate = float(row['Unemployment_Rate'])
             time_near_interaction = Near_Dummy*Time_Dummy
@@ -71,7 +70,6 @@ with open('../data/csv/year_and_county_data.csv','w') as out_file:
             Wage = row['avg_annual_pay']
             Real_Wage = float((Wage*100)/CPI)
             if Real_Wage == 0:
-                print('Break')
                 break
             Unemployment_Rate = float(row['Unemployment_Rate'])
             time_near_interaction = Near_Dummy*Time_Dummy

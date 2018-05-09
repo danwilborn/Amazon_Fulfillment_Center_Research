@@ -26,14 +26,16 @@ only_counties = set()
 for i, row in work_counties_df.iterrows():
     if row['Number']/row['POPESTIMATE2010'] < .00001:
         FIPS = format(row['work_state_FIPS'], '02d')+format(row['work_county_FIPS'], '03d')
-        non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
-        only_counties.add((row['work_county'],row['work_state']))
+        if (row['residence_county'],row['residence_state']) not in only_counties:
+            non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
+            only_counties.add((row['work_county'],row['work_state']))
 
 for i, row in residence_counties_df.iterrows():
     if row['Number']/row['POPESTIMATE2010'] < .00001:
         FIPS = format(row['work_state_FIPS'], '02d')+format(row['work_county_FIPS'], '03d')
-        non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
-        only_counties.add((row['work_county'],row['work_state']))
+        if (row['work_county'],row['work_state']) not in only_counties:
+            non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
+            only_counties.add((row['work_county'],row['work_state']))
 
 print(len(non_adjacent_counties))
 print(len(only_counties))
