@@ -12,11 +12,11 @@ CPI_df = pd.read_csv('../data/csv/CPI_base_year_2000.csv')
 
 with open('../data/csv/year_and_county_data.csv','w') as out_file:
     csv_out = csv.writer(out_file)
-    csv_out.writerow(['FIPS', 'State', 'County', 'Year_Opened', 'Year', 'Time_Dummy', 'Near_Dummy', 'Time*Near', 'Annual_Wage', 'CPI', 'Real_Wage', 'Unemployment_Rate', 'Log(Real_Wage)', 'Log(Unemployment)'])
+    csv_out.writerow(['FIPS', 'State', 'County', 'Year_Opened', 'Year', 'Time_Dummy', 'Near_Dummy', 'Time*Near', 'Annual_Wage', 'CPI', 'Real_Wage', 'Unemployment_Rate', 'Log(Real_Wage)', 'Log(Unemployment)', 'Annual_Establishments', 'Log(Establishments)'])
 
     for Year in range(1994,2016):
         wage_df = pd.read_csv('../data/csv/wage_files/'+str(Year)+'.annual.singlefile.csv')
-        wage_df = wage_df[['area_fips', 'industry_code', 'own_code', 'avg_annual_pay']]
+        wage_df = wage_df[['area_fips', 'industry_code', 'own_code', 'avg_annual_pay', 'annual_avg_estabs']]
         wage_df = wage_df[wage_df['industry_code'] == '10']
         wage_df = wage_df[wage_df['own_code'] == 0]
 
@@ -24,8 +24,6 @@ with open('../data/csv/year_and_county_data.csv','w') as out_file:
       
  
         empl_df = pd.read_csv('../data/csv/unemployment_files/'+str(Year)+'_unemp.csv')
-        #empl_df = empl_df[str(empl_df['Unemployment_Rate']) != 'N.A.']
-        
 
         all_data_counties_df = pd.merge(wage_and_counties_df, empl_df, how='inner', left_on='FIPS', right_on='FIPS')        
 
@@ -50,10 +48,12 @@ with open('../data/csv/year_and_county_data.csv','w') as out_file:
             time_near_interaction = Near_Dummy*Time_Dummy
             log_wage = float(np.log(Real_Wage))
             log_unempl = np.log(Unemployment_Rate)
-            csv_out.writerow([FIPS, State, County, Year_Opened, Year, Time_Dummy, Near_Dummy, time_near_interaction, Wage, CPI, Real_Wage, Unemployment_Rate, log_wage, log_unempl])                                     
+            establishments = row['annual_avg_estabs']
+            log_estabs = np.log(establishments)
+
+            csv_out.writerow([FIPS, State, County, Year_Opened, Year, Time_Dummy, Near_Dummy, time_near_interaction, Wage, CPI, Real_Wage, Unemployment_Rate, log_wage, log_unempl, establishments, log_estabs])                                     
 
         wage_and_non_adj_counties_df = pd.merge(non_adj_counties_df, wage_df, how='inner', left_on='FIPS', right_on="area_fips")
-        #wage_and_non_adj_counties_df.drop_duplicates(subset=['FIPS', 'State', 'County', 'avg_annual_pay'], keep='first')        
 
         all_data_non_adj_counties_df = pd.merge(wage_and_non_adj_counties_df, empl_df, how='inner', left_on='FIPS', right_on='FIPS')
 
@@ -75,6 +75,9 @@ with open('../data/csv/year_and_county_data.csv','w') as out_file:
             time_near_interaction = Near_Dummy*Time_Dummy
             log_wage = float(np.log(Real_Wage))
             log_unempl = np.log(Unemployment_Rate)
-            csv_out.writerow([FIPS, State, County, Year_Opened, Year, Time_Dummy, Near_Dummy, time_near_interaction, Wage, CPI, Real_Wage, Unemployment_Rate, log_wage, log_unempl])                                     
+            establishments = row['annual_avg_estabs']
+            log_estabs = np.log(establishments)
+
+            csv_out.writerow([FIPS, State, County, Year_Opened, Year, Time_Dummy, Near_Dummy, time_near_interaction, Wage, CPI, Real_Wage, Unemployment_Rate, log_wage, log_unempl, establishments, log_estabs])                                     
            
     
