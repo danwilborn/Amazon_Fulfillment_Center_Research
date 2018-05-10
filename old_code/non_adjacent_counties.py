@@ -20,30 +20,30 @@ work_counties_df = pd.merge(work_counties_df, population_df, how='inner', left_o
 residence_counties_df = pd.merge(residence_counties_df, population_df, how='inner', left_on=['residence_county','residence_state'], right_on=['CTYNAME','STNAME'])
 
 
-adjacent_counties= set()
+non_adjacent_counties= set()
 only_counties = set()
 
 for i, row in work_counties_df.iterrows():
-    if row['Number']/row['POPESTIMATE2010'] > .01:
-        FIPS = format(row['residence_state_FIPS'], '02d')+format(row['residence_county_FIPS'], '03d')
+    if row['Number']/row['POPESTIMATE2010'] < .00001:
+        FIPS = format(row['work_state_FIPS'], '02d')+format(row['work_county_FIPS'], '03d')
         if (row['residence_county'],row['residence_state']) not in only_counties:
-            only_counties.add((row['residence_county'],row['residence_state']))
-            adjacent_counties.add((row['residence_county'],row['residence_state'],str(FIPS),row['Year Opened']))
-        
+            non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
+            only_counties.add((row['work_county'],row['work_state']))
+
 for i, row in residence_counties_df.iterrows():
-    if row['Number']/row['POPESTIMATE2010'] > .01:
+    if row['Number']/row['POPESTIMATE2010'] < .00001:
         FIPS = format(row['work_state_FIPS'], '02d')+format(row['work_county_FIPS'], '03d')
         if (row['work_county'],row['work_state']) not in only_counties:
+            non_adjacent_counties.add((row['work_county'],row['work_state'],FIPS,row['Year Opened']))
             only_counties.add((row['work_county'],row['work_state']))
-            adjacent_counties.add((row['work_county'],row['work_state'],str(FIPS),row['Year Opened']))
 
-print(len(adjacent_counties))
+print(len(non_adjacent_counties))
 print(len(only_counties))
 #print(adjacent_counties)
 
-with open('../data/csv/adjacent_counties.csv','w') as out_file:
+with open('../data/csv/non_adjacent_counties.csv','w') as out_file:
     csv_out = csv.writer(out_file)
     csv_out.writerow(['County','State','FIPS','Year Opened'])
-    for row in adjacent_counties:
+    for row in non_adjacent_counties:
         csv_out.writerow(row)
 
